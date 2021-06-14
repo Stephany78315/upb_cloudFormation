@@ -1,0 +1,70 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform:
+- AWS::Serverless-2016-10-31
+Description: Lambda CloudFormation Lab
+Resources:
+  GetUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getUser
+      Handler: user.getUser
+      Runtime: python3.6
+      CodeUri: s3://my-tefy-123/8d988064d1e4be5248e917dcfc2ec9fd
+      Environment:
+        Variables:
+          USERS_TABLE:
+            Ref: UsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: MyAPI
+            Path: /user
+            Method: GET
+  PutUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: putUser
+      Handler: user.putUser
+      Runtime: python3.6
+      CodeUri: s3://my-tefy-123/8d988064d1e4be5248e917dcfc2ec9fd
+      Environment:
+        Variables:
+          USERS_TABLE:
+            Ref: UsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: MyAPI
+            Path: /user
+            Method: PUT
+  MyAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: users-api
+      StageName: prod
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: s3://my-tefy-123/0fc3d6b8b4483f8a6d8eb32fa9467f21
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: users-table
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      KeySchema:
+      - AttributeName: pk
+        KeyType: HASH
+      - AttributeName: sk
+        KeyType: RANGE
+      AttributeDefinitions:
+      - AttributeName: pk
+        AttributeType: S
+      - AttributeName: sk
+        AttributeType: S
