@@ -3,66 +3,89 @@ Transform:
 - AWS::Serverless-2016-10-31
 Description: Lambda CloudFormation Lab
 Resources:
-  GetUser:
+  GetMovie:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: getUser
-      Handler: user.getUser
+      FunctionName: getMovie
+      Handler: movie.getMovie
       Runtime: python3.6
-      CodeUri: s3://my-tefy-123/2c8c7323ce845ee94773f0bb8cc23382
+      CodeUri: s3://my-tefy-123/af20d6a4a9a85a78469ecf36dffd9b63
       Policies:
       - DynamoDBReadPolicy:
           TableName:
-            Ref: UsersTable
+            Ref: MoviesTable
       Environment:
         Variables:
-          USERS_TABLE:
-            Ref: UsersTable
+          MOVIES_TABLE:
+            Ref: MoviesTable
       Events:
-        GetUsers:
+        GetMovies:
           Type: Api
           Properties:
             RestApiId:
               Ref: MyAPI
-            Path: /user/{userId}
+            Path: /movies/{movie_id}
             Method: GET
-  PutUser:
+  PutMovie:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: putUser
-      Handler: user.putUser
+      FunctionName: putMovie
+      Handler: movie.putMovie
       Runtime: python3.6
-      CodeUri: s3://my-tefy-123/2c8c7323ce845ee94773f0bb8cc23382
+      CodeUri: s3://my-tefy-123/af20d6a4a9a85a78469ecf36dffd9b63
       Policies:
       - DynamoDBWritePolicy:
           TableName:
-            Ref: UsersTable
+            Ref: MoviesTable
       Environment:
         Variables:
-          USERS_TABLE:
-            Ref: UsersTable
+          MOVIES_TABLE:
+            Ref: MoviesTable
       Events:
-        GetUsers:
+        GetMovies:
           Type: Api
           Properties:
             RestApiId:
               Ref: MyAPI
-            Path: /user/{userId}
+            Path: /movies/{movie_id}
             Method: PUT
+  RoomsPerDay:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: roomsPerDay
+      Handler: movie.roomsPerDay
+      Runtime: python3.6
+      CodeUri: s3://my-tefy-123/af20d6a4a9a85a78469ecf36dffd9b63
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: MoviesTable
+      Environment:
+        Variables:
+          MOVIES_TABLE:
+            Ref: MoviesTable
+      Events:
+        GetMovies:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: MyAPI
+            Path: /roomsPerDay/movie/{movie_id}
+            Method: GET
   MyAPI:
     Type: AWS::Serverless::Api
     Properties:
-      Name: users-api
+      Name: movies-api
       StageName: prod
       DefinitionBody:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location: s3://my-tefy-123/90db55d276f27316d783e3f6e5d9d54a
-  UsersTable:
+            Location: s3://my-tefy-123/2cbfcc26613fc0c94f6e27c1d9e8c2cb
+  MoviesTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: users-table
+      TableName: movies-table
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5

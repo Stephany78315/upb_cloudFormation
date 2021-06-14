@@ -4,6 +4,36 @@ Transform:
 
 Description: Lambda CloudFormation Lab
 Resources:
+  # MyLambdaRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     RoleName: rpp-ip-cluster-lambda-role
+  #     AssumeRolePolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #       - Effect: Allow
+  #         Principal:
+  #           Service:
+  #           - lambda.amazonaws.com
+  #         Action:
+  #         - sts:AssumeRole
+  #     Path: "/"
+  #     Policies:
+  #     - PolicyName: my-lambda-policy
+  #       PolicyDocument:
+  #         Version: '2012-10-17'
+  #         Statement:
+  #         - Effect: Allow
+  #           Action:
+  #           - logs:CreateLogGroup
+  #           - logs:CreateLogStream
+  #           - logs:PutLogEvents
+  #           Resource: arn:aws:logs:*:*:*
+  #         - Effect: Allow
+  #           Action:
+  #           - dynamodb:GetItem
+  #           Resource: arn:aws:dynamodb:*:*:table/users-table
+
   GetUser:
     Type: AWS::Serverless::Function
     Properties:
@@ -11,7 +41,11 @@ Resources:
       Handler: user.getUser
       Runtime: python3.6
       CodeUri: package/
-      Environment: 
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref UsersTable
+      # Role: !GetAtt MyLambdaRole.Arn
+      Environment:
         Variables:
           USERS_TABLE: !Ref UsersTable
       Events:
@@ -19,8 +53,9 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyAPI
-            Path: /user
+            Path: "/user/{userId}"
             Method: GET
+      
 
   PutUser:
     Type: AWS::Serverless::Function
@@ -29,7 +64,11 @@ Resources:
       Handler: user.putUser
       Runtime: python3.6
       CodeUri: package/
-      Environment: 
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref UsersTable
+      # Role: !GetAtt MyLambdaRole.Arn
+      Environment:
         Variables:
           USERS_TABLE: !Ref UsersTable
       Events:
@@ -37,7 +76,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyAPI
-            Path: /user
+            Path: "/user/{userId}"
             Method: PUT
   
   MyAPI:
