@@ -9,7 +9,7 @@ Resources:
       FunctionName: getMovie
       Handler: movie.getMovie
       Runtime: python3.6
-      CodeUri: s3://my-tefy-123/af20d6a4a9a85a78469ecf36dffd9b63
+      CodeUri: s3://my-tefy-123/8e9c841afdb3ce410a8c2e5cb4b0661f
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -32,7 +32,7 @@ Resources:
       FunctionName: putMovie
       Handler: movie.putMovie
       Runtime: python3.6
-      CodeUri: s3://my-tefy-123/af20d6a4a9a85a78469ecf36dffd9b63
+      CodeUri: s3://my-tefy-123/8e9c841afdb3ce410a8c2e5cb4b0661f
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -49,13 +49,59 @@ Resources:
               Ref: MyAPI
             Path: /movies/{movie_id}
             Method: PUT
+  GetCinema:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getCinema
+      Handler: cinema-rooms.getCinema
+      Runtime: python3.6
+      CodeUri: s3://my-tefy-123/8e9c841afdb3ce410a8c2e5cb4b0661f
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: MoviesTable
+      Environment:
+        Variables:
+          MOVIES_TABLE:
+            Ref: MoviesTable
+      Events:
+        GetMovies:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: MyAPI
+            Path: /cinema-rooms/{cinema_id}
+            Method: GET
+  PutCinema:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: putCinema
+      Handler: cinema-rooms.putCinema
+      Runtime: python3.6
+      CodeUri: s3://my-tefy-123/8e9c841afdb3ce410a8c2e5cb4b0661f
+      Policies:
+      - DynamoDBWritePolicy:
+          TableName:
+            Ref: MoviesTable
+      Environment:
+        Variables:
+          MOVIES_TABLE:
+            Ref: MoviesTable
+      Events:
+        GetMovies:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: MyAPI
+            Path: /cinema-rooms/{cinema_id}
+            Method: PUT
   RoomsPerDay:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: roomsPerDay
       Handler: movie.roomsPerDay
       Runtime: python3.6
-      CodeUri: s3://my-tefy-123/af20d6a4a9a85a78469ecf36dffd9b63
+      CodeUri: s3://my-tefy-123/8e9c841afdb3ce410a8c2e5cb4b0661f
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -72,6 +118,75 @@ Resources:
               Ref: MyAPI
             Path: /roomsPerDay/movie/{movie_id}
             Method: GET
+  PeopleAttend:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: peopleAttend
+      Handler: movie.peopleAttend
+      Runtime: python3.6
+      CodeUri: s3://my-tefy-123/8e9c841afdb3ce410a8c2e5cb4b0661f
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: MoviesTable
+      Environment:
+        Variables:
+          MOVIES_TABLE:
+            Ref: MoviesTable
+      Events:
+        GetMovies:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: MyAPI
+            Path: /peopleAttend/movie/{movie_id}/cinema-rooms/{room_id}
+            Method: GET
+  SeatsAvailable:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: seatsAvailable
+      Handler: cinema-rooms.seatsAvailable
+      Runtime: python3.6
+      CodeUri: s3://my-tefy-123/8e9c841afdb3ce410a8c2e5cb4b0661f
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: MoviesTable
+      Environment:
+        Variables:
+          MOVIES_TABLE:
+            Ref: MoviesTable
+      Events:
+        GetMovies:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: MyAPI
+            Path: /seatsAvailable/cinema/{cinema_id}
+            Method: GET
+  CustomerWatched:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: customerWatched
+      Handler: customers.customerWatched
+      Runtime: python3.6
+      CodeUri: s3://my-tefy-123/8e9c841afdb3ce410a8c2e5cb4b0661f
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: MoviesTable
+      Environment:
+        Variables:
+          MOVIES_TABLE:
+            Ref: MoviesTable
+      Events:
+        GetMovies:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: MyAPI
+            Path: /customerWatched/customers/{customer_id}
+            Method: GET
   MyAPI:
     Type: AWS::Serverless::Api
     Properties:
@@ -81,7 +196,7 @@ Resources:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location: s3://my-tefy-123/2cbfcc26613fc0c94f6e27c1d9e8c2cb
+            Location: s3://my-tefy-123/6cf07e77535a43701293ef1a1056f0b0
   MoviesTable:
     Type: AWS::DynamoDB::Table
     Properties:

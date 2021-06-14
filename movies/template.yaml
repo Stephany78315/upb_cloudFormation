@@ -47,6 +47,48 @@ Resources:
             Path: "/movies/{movie_id}"
             Method: PUT
   
+  GetCinema:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getCinema
+      Handler: cinema-rooms.getCinema
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref MoviesTable
+      Environment:
+        Variables:
+          MOVIES_TABLE: !Ref MoviesTable
+      Events:
+        GetMovies:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/cinema-rooms/{cinema_id}"
+            Method: GET
+
+  PutCinema:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: putCinema
+      Handler: cinema-rooms.putCinema
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref MoviesTable
+      Environment:
+        Variables:
+          MOVIES_TABLE: !Ref MoviesTable
+      Events:
+        GetMovies:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/cinema-rooms/{cinema_id}"
+            Method: PUT
+  
   RoomsPerDay:
     Type: AWS::Serverless::Function
     Properties:
@@ -67,11 +109,107 @@ Resources:
             RestApiId: !Ref MyAPI
             Path: "/roomsPerDay/movie/{movie_id}"
             Method: GET
+            
+  PeopleAttend:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: peopleAttend
+      Handler: movie.peopleAttend
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref MoviesTable
+      Environment:
+        Variables:
+          MOVIES_TABLE: !Ref MoviesTable
+      Events:
+        GetMovies:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/peopleAttend/movie/{movie_id}/cinema-rooms/{room_id}"
+            Method: GET
+            
+  SeatsAvailable:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: seatsAvailable
+      Handler: cinema-rooms.seatsAvailable
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref MoviesTable
+      Environment:
+        Variables:
+          MOVIES_TABLE: !Ref MoviesTable
+      Events:
+        GetMovies:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/seatsAvailable/cinema/{cinema_id}"
+            Method: GET
+            
+  CustomerWatched:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: customerWatched
+      Handler: customers.customerWatched
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref MoviesTable
+      Environment:
+        Variables:
+          MOVIES_TABLE: !Ref MoviesTable
+      Events:
+        GetMovies:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/customerWatched/customers/{customer_id}"
+            Method: GET
   
   MyAPI:
     Type: AWS::Serverless::Api
     Properties:
       Name: movies-api
+      StageName: prod
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: swagger.yaml
+            
+            
+  PutPeople:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: putPeople
+      Handler: cinema-rooms.putPeople
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref MoviesTable
+      Environment:
+        Variables:
+          MOVIES_TABLE: !Ref MoviesTable
+      Events:
+        GetMovies:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ErrorAPI
+            Path: "/cinema-rooms/{cinema_id}"
+            Method: PUT
+            
+  ErrorAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: errors-api
       StageName: prod
       DefinitionBody:
         Fn::Transform:
