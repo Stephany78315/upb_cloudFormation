@@ -2,13 +2,14 @@
 import json
 import boto3
 import os
+from boto3.dynamodb.conditions import Key
 
 users_table = os.environ['MOVIES_TABLE']
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(users_table)
 
-def getMovie(event, context):
+def getInfoMovie(event, context):
     print(json.dumps({"running": True}))
     print(json.dumps(event))
     
@@ -44,7 +45,7 @@ def putMovie(event, context):
     table.put_item(
         Item={
             'pk': user_id,
-            'sk': body_object['sk'], #mejorar
+            'sk': 'info_' + user_id, #mejorar
             'title': body_object['title'],
             'actors': body_object['actors'],
             'year': body_object['year']
@@ -66,18 +67,35 @@ def roomsPerDay(event, context):
     
     query_date = event["queryStringParameters"]["date"]
     
-    # response = table.get_item(
-    #     Key={
-    #         'pk': user_id,
-    #     }
-    # )
-    # item = response['Item']
-    # print(item)
     
     
+    response = table.query(
+        KeyConditionExpression=Key('pk').eq(user_id) & Key('sk').begins_with('cinema_')
+    )
+   
+    #print(json.dumps(response['Items']))
+    items = response['Items']
+    
+    finales = []
+    for s in items:
+        if s['date'] == '14/6/2021':
+            finales.append(s)
+    # scan_kwargs = {
+    #     'FilterExpression': Key('pk').eq(user_id) & Key('sk').begins_with('cinema_') & 'date = :s',
+    #     'ExpressionAttributeNames': ':s' = {"S": "14/6/2021"}
+    # }
+   
+    # schedules = []
+    # for f in finales:
+    #     schedules = f['schedule']
+    #     print('guarda')
+        
+   
     return {
-        'body': json.dumps("3.- roomsPerDay")
+        'body': json.dumps(finales)
     }
+    
+   
     
 def peopleAttend(event, context):
     print(json.dumps({"running": True}))
@@ -89,15 +107,14 @@ def peopleAttend(event, context):
     cinema_id = array_path[-1]
     
     
-    # response = table.get_item(
-    #     Key={
-    #         'pk': user_id,
-    #     }
-    # )
-    # item = response['Item']
-    # print(item)
-    
+    response = table.get_item(
+        Key={
+            'pk': movie_id,
+            'sk': cinema_id
+        }
+    )
+    item = response['Item']['customers']
     
     return {
-        'body': json.dumps("4.- peopleAttend")
+        'body': json.dumps(item)
     }

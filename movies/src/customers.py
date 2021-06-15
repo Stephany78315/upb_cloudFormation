@@ -13,16 +13,25 @@ def customerWatched(event, context):
     
     path = event["path"] # "/cinema-rooms/cinema_01"
     array_path = path.split("/") # ["", "movie", "cinema_01"]
-    custumer_id = array_path[-1]
+    customer_id = array_path[-1]
     
-    # response = table.get_item(
-    #     Key={
-    #         'pk': cinema_id
-    #     }
-    # )
-    # item = response['Item']
-    # #print(item)
+    response = table.get_item(
+        Key={
+            'pk': customer_id,
+            'sk': 'info_' + customer_id
+        }
+    )
+    item = response['Item']
+    
+    
+    
+    
+    
+    
     return {
         #'statusCode': 200,
-        'body': json.dumps("6.- customerWatched")
+        'body': json.dumps(item)
     }
+    
+    
+

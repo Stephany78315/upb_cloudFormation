@@ -156,5 +156,30 @@ paths:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:customerWatched/invocations"
         httpMethod: "POST"
+  
+  /updateCinema/cinema/{cinema_id}:
+    putCinema:
+      summary: cinema people limit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                people_watched: 
+                  type: array
+                  items: 
+                    type: string
+      parameters:
+        - name: cinema_id
+          in: path
+          required: true
+          description: cinema unique id
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putCinema/invocations"
+        httpMethod: "POST"
 
   

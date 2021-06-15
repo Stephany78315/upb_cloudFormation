@@ -5,11 +5,11 @@ Transform:
 
 Description: Lambda CloudFormation Lab
 Resources:
-  GetMovie:
+  GetInfoMovie:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: getMovie
-      Handler: movie.getMovie
+      FunctionName: getInfoMovie
+      Handler: movie.getInfoMovie
       Runtime: python3.6
       CodeUri: package/
       Policies:
@@ -47,47 +47,47 @@ Resources:
             Path: "/movies/{movie_id}"
             Method: PUT
   
-  GetCinema:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: getCinema
-      Handler: cinema-rooms.getCinema
-      Runtime: python3.6
-      CodeUri: package/
-      Policies:
-        - DynamoDBReadPolicy:
-            TableName: !Ref MoviesTable
-      Environment:
-        Variables:
-          MOVIES_TABLE: !Ref MoviesTable
-      Events:
-        GetMovies:
-          Type: Api
-          Properties:
-            RestApiId: !Ref MyAPI
-            Path: "/cinema-rooms/{cinema_id}"
-            Method: GET
+  # GetCinema:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     FunctionName: getCinema
+  #     Handler: cinema-rooms.getCinema
+  #     Runtime: python3.6
+  #     CodeUri: package/
+  #     Policies:
+  #       - DynamoDBReadPolicy:
+  #           TableName: !Ref MoviesTable
+  #     Environment:
+  #       Variables:
+  #         MOVIES_TABLE: !Ref MoviesTable
+  #     Events:
+  #       GetMovies:
+  #         Type: Api
+  #         Properties:
+  #           RestApiId: !Ref MyAPI
+  #           Path: "/cinema-rooms/{cinema_id}"
+  #           Method: GET
 
-  PutCinema:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: putCinema
-      Handler: cinema-rooms.putCinema
-      Runtime: python3.6
-      CodeUri: package/
-      Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref MoviesTable
-      Environment:
-        Variables:
-          MOVIES_TABLE: !Ref MoviesTable
-      Events:
-        GetMovies:
-          Type: Api
-          Properties:
-            RestApiId: !Ref MyAPI
-            Path: "/cinema-rooms/{cinema_id}"
-            Method: PUT
+  # PutCinema:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     FunctionName: putCinema
+  #     Handler: cinema-rooms.putCinema
+  #     Runtime: python3.6
+  #     CodeUri: package/
+  #     Policies:
+  #       - DynamoDBWritePolicy:
+  #           TableName: !Ref MoviesTable
+  #     Environment:
+  #       Variables:
+  #         MOVIES_TABLE: !Ref MoviesTable
+  #     Events:
+  #       GetMovies:
+  #         Type: Api
+  #         Properties:
+  #           RestApiId: !Ref MyAPI
+  #           Path: "/cinema-rooms/{cinema_id}"
+  #           Method: PUT
   
   RoomsPerDay:
     Type: AWS::Serverless::Function
@@ -172,6 +172,31 @@ Resources:
             RestApiId: !Ref MyAPI
             Path: "/customerWatched/customers/{customer_id}"
             Method: GET
+            
+            
+            
+  putCinema:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: putCinema
+      Handler: cinema-rooms.putCinema
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref MoviesTable
+        - DynamoDBWritePolicy:
+            TableName: !Ref MoviesTable
+      Environment:
+        Variables:
+          MOVIES_TABLE: !Ref MoviesTable
+      Events:
+        GetMovies:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/updateCinema/cinema/{cinema_id}"
+            Method: PUT
   
   MyAPI:
     Type: AWS::Serverless::Api
@@ -185,38 +210,7 @@ Resources:
             Location: swagger.yaml
             
             
-  PutPeople:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: putPeople
-      Handler: cinema-rooms.putPeople
-      Runtime: python3.6
-      CodeUri: package/
-      Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref MoviesTable
-      Environment:
-        Variables:
-          MOVIES_TABLE: !Ref MoviesTable
-      Events:
-        GetMovies:
-          Type: Api
-          Properties:
-            RestApiId: !Ref ErrorAPI
-            Path: "/cinema-rooms/{cinema_id}"
-            Method: PUT
             
-  ErrorAPI:
-    Type: AWS::Serverless::Api
-    Properties:
-      Name: errors-api
-      StageName: prod
-      DefinitionBody:
-        Fn::Transform:
-          Name: AWS::Include
-          Parameters:
-            Location: swagger.yaml
-  
   MoviesTable:
     Type: AWS::DynamoDB::Table
     Properties:
