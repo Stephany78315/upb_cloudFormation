@@ -86,41 +86,39 @@ def putCinema(event, context):
     array_path = path.split("/") # ["", "movie", "cinema_01"]
     cinema_id = array_path[-1]
     
-    # response = table.get_item(
-    #     Key={
-    #         'pk': cinema_id,
-    #         'sk': 'info' + cinema_id
-    #     }
-    # )
-    # item = response['Item']
-    # lim = response['Item']['limit_people']
+    response = table.get_item(
+        Key={
+            'pk': cinema_id,
+            'sk': 'info_' + cinema_id
+        }
+    )
+    item = response['Item']
+    lim = response['Item']['limit-people']
     
-    # body = event["body"] 
-    # body_object = json.loads(body)
     
-    # personas = body_object['people_watched']
+    body = event["body"] 
+    body_object = json.loads(body)
     
-    # total = personas.len()
+    personas = body_object['people_watched']
     
-    # if total <= lim:
-    #     table.put_item(
-    #         Item={
-    #             'pk': cinema_id,
-    #             'sk': 'info_' + cinema_id, #mejorar
-    #             'schedule': item['schedule'],
-    #             '3D': item['3D'],
-    #             'customers': personas,
-    #             'limit_people': item['limit_people']
-    #         }
-    #     )
-    #     return {
-    #         'body': json.dumps("aceptado")
-    #     }
+    total = len(personas)
     
-    # {
-    # "people": ["maria","bernice"]
-    # }
-    #print(item)
+    if total <= lim:
+        table.put_item(
+            Item={
+                'pk': cinema_id,
+                'sk': 'info_' + cinema_id, #mejorar
+                '3D': item['3D'],
+                'customers': personas,
+                'limit-people': item['limit-people']
+            }
+        )
+        print(json.dumps("entra al if"))
+        return {
+            'body': json.dumps("aceptado")
+        }
+    
+    
     return {
         #'statusCode': 200,
         'body': json.dumps("sobre pasa el numero de personas permitidas")

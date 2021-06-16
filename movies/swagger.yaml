@@ -45,50 +45,50 @@ paths:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putMovie/invocations"
         httpMethod: "POST"
 
-  /cinema-rooms/{cinema_id}:
-    get:
-      summary: Returns cinema info
-      parameters:
-        - name: cinema_id
-          in: path
-          required: true
-          description: cinema unique id
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:getCinema/invocations"
-        httpMethod: "POST"
-    put:
-      summary: Saves cinema info
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                sk: 
-                  type: string
-                schedule:
-                  type: array
-                  items: 
-                    type: string
-                3D:
-                  type: string
-                people-attend:
-                  type: array
-                  items: 
-                    type: string
-      parameters:
-        - name: cinema_id
-          in: path
-          required: true
-          description: cinema unique id
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putCinema/invocations"
-        httpMethod: "POST"
+  # /cinema-rooms/{cinema_id}:
+  #   get:
+  #     summary: Returns cinema info
+  #     parameters:
+  #       - name: cinema_id
+  #         in: path
+  #         required: true
+  #         description: cinema unique id
+  #     x-amazon-apigateway-integration:
+  #       type: "aws_proxy"
+  #       uri:
+  #         Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:getCinema/invocations"
+  #       httpMethod: "POST"
+  #   put:
+  #     summary: Saves cinema info
+  #     requestBody:
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               sk: 
+  #                 type: string
+  #               schedule:
+  #                 type: array
+  #                 items: 
+  #                   type: string
+  #               3D:
+  #                 type: string
+  #               people-attend:
+  #                 type: array
+  #                 items: 
+  #                   type: string
+  #     parameters:
+  #       - name: cinema_id
+  #         in: path
+  #         required: true
+  #         description: cinema unique id
+  #     x-amazon-apigateway-integration:
+  #       type: "aws_proxy"
+  #       uri:
+  #         Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putCinema/invocations"
+  #       httpMethod: "POST"
 
 
 
@@ -158,7 +158,7 @@ paths:
         httpMethod: "POST"
   
   /updateCinema/cinema/{cinema_id}:
-    putCinema:
+    put:
       summary: cinema people limit
       requestBody:
         required: true

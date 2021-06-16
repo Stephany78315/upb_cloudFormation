@@ -9,7 +9,7 @@ Resources:
       FunctionName: getInfoMovie
       Handler: movie.getInfoMovie
       Runtime: python3.6
-      CodeUri: s3://my-tefy-123/ea9b243d24b977353c490f8f4b4c3e93
+      CodeUri: s3://my-tefy-123/e8e7216498c31779d143dbffa407dbee
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -32,7 +32,7 @@ Resources:
       FunctionName: putMovie
       Handler: movie.putMovie
       Runtime: python3.6
-      CodeUri: s3://my-tefy-123/ea9b243d24b977353c490f8f4b4c3e93
+      CodeUri: s3://my-tefy-123/e8e7216498c31779d143dbffa407dbee
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -55,7 +55,7 @@ Resources:
       FunctionName: roomsPerDay
       Handler: movie.roomsPerDay
       Runtime: python3.6
-      CodeUri: s3://my-tefy-123/ea9b243d24b977353c490f8f4b4c3e93
+      CodeUri: s3://my-tefy-123/e8e7216498c31779d143dbffa407dbee
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -78,7 +78,7 @@ Resources:
       FunctionName: peopleAttend
       Handler: movie.peopleAttend
       Runtime: python3.6
-      CodeUri: s3://my-tefy-123/ea9b243d24b977353c490f8f4b4c3e93
+      CodeUri: s3://my-tefy-123/e8e7216498c31779d143dbffa407dbee
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -101,7 +101,7 @@ Resources:
       FunctionName: seatsAvailable
       Handler: cinema-rooms.seatsAvailable
       Runtime: python3.6
-      CodeUri: s3://my-tefy-123/ea9b243d24b977353c490f8f4b4c3e93
+      CodeUri: s3://my-tefy-123/e8e7216498c31779d143dbffa407dbee
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -124,7 +124,7 @@ Resources:
       FunctionName: customerWatched
       Handler: customers.customerWatched
       Runtime: python3.6
-      CodeUri: s3://my-tefy-123/ea9b243d24b977353c490f8f4b4c3e93
+      CodeUri: s3://my-tefy-123/e8e7216498c31779d143dbffa407dbee
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -147,7 +147,7 @@ Resources:
       FunctionName: putCinema
       Handler: cinema-rooms.putCinema
       Runtime: python3.6
-      CodeUri: s3://my-tefy-123/ea9b243d24b977353c490f8f4b4c3e93
+      CodeUri: s3://my-tefy-123/e8e7216498c31779d143dbffa407dbee
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -176,7 +176,7 @@ Resources:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location: s3://my-tefy-123/c1e115ffa6d849a4c6e89a14d0324812
+            Location: s3://my-tefy-123/65d7e637aa1736fc340d5d5fbeb00f8d
   MoviesTable:
     Type: AWS::DynamoDB::Table
     Properties:
